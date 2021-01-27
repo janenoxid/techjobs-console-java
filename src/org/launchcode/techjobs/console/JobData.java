@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -54,6 +52,52 @@ public class JobData {
         return allJobs;
     }
 
+
+    /**
+     * Search all columns for a search term
+     * Should not contain duplicate jobs
+     * Code will automatically search a new column
+     * Utilize loops and collection methods instead of trying to use findByColumnAndValue
+     * Code will look similar to findByColumnAndValue
+     */
+
+    public static ArrayList<HashMap<String, String>> findByValue(String value){
+
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>(); // declared the ArrayList of HashMaps we'll return
+        /// okay I think I'm going to do a regular "For Loop" to go through the ArrayList instead of a For Each loop.
+
+        for (HashMap<String, String> allJob : allJobs) {
+
+            // this is how I iterate through the ArrayList to get each HashMap...
+            HashMap<String, String> job;
+            job = allJob;
+            Collection<String> jobValues = job.values(); // can I change this to a string, and then search the string?
+            // maybe now I'll use a for-each loop to check for the search term in the collection jobValues
+            boolean matchesSearchTerm = false;
+            for (String jobValue : jobValues) {
+                //check if it .contains() the search term...
+                String lowerJobValue = jobValue.toLowerCase();
+                String lowerSearchTerm = value.toLowerCase();
+                if (lowerJobValue.contains(lowerSearchTerm)) {
+                    matchesSearchTerm = true;
+                    break;
+                }
+
+            }
+
+            if (matchesSearchTerm) {
+                jobs.add(job);
+            }
+        }
+
+        return jobs;
+    }
+
+
+
     /**
      * Returns results of search the jobs data by key/value, using
      * inclusion of the search term.
@@ -69,12 +113,12 @@ public class JobData {
 
         // load data, if not already loaded
         loadData();
-
+        String lowerSearchTerm = value.toLowerCase();
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
 
-            String aValue = row.get(column);
+            String aValue = row.get(column).toLowerCase();
 
             if (aValue.contains(value)) {
                 jobs.add(row);
